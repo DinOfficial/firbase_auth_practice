@@ -1,4 +1,4 @@
-# getx
+# Firebase Auth Practice
 
 A new Flutter project.
 
