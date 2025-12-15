@@ -98,9 +98,10 @@ class _SignInScreenState extends State<SignInScreen> {
             const SizedBox(height: 20),
             TextButton(
               onPressed: () {
-                Navigator.push(
+                Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                  MaterialPageRoute(builder: (context) => SignUpScreen()),
+                      (p) => false,
                 );
               },
               child: const Text('Don\'t have an account? Sign Up'),
