@@ -27,13 +27,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Firebase Sign Up')),
       body: Form(
         key: _formKey,
         child: ListView(
           padding: const EdgeInsets.all(12),
           children: [
-            const Text('Sign up form'),
+            const SizedBox(height: 100),
+            Text(
+              'Create your account',
+              style: TextStyle(fontSize: 20),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Use your email password or gmail',
+              style: TextStyle(fontSize: 12),
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _emailController,
@@ -75,11 +85,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
             else
               Column(
                 children: [
-                  ElevatedButton(onPressed: _onTapEmailSignUp, child: const Text('Create User')),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _onTapEmailSignUp,
+                      child: const Text('Create User'),
+                    ),
+                  ),
                   const SizedBox(height: 12),
                   TextButton(
                     onPressed: () async {
-                     await _onTapGoogleSignIn();
+                      await _onTapGoogleSignIn();
                     },
                     child: const Text('Sign up with Google'),
                   ),
@@ -175,7 +191,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Google Sign-In Successful: ${userCredential.user?.displayName}')),
         );
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>HomePage()), (p)=>false);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+          (p) => false,
+        );
       }
     } catch (e) {
       if (mounted) {

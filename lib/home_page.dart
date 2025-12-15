@@ -10,7 +10,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> {  
   @override
   Widget build(BuildContext context) {
     final User? currentUser = FirebaseAuth.instance.currentUser;
@@ -42,11 +42,11 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: .center,
                 crossAxisAlignment: .center,
                 children: [
-                  if (currentUser?.photoURL != null)
+                  if (currentUser.photoURL != null)
                     ClipRRect(
                       borderRadius: BorderRadius.circular(50),
                       child: Image.network(
-                        currentUser!.photoURL!,
+                        currentUser.photoURL!,
                         width: 100,
                         height: 100,
                         fit: BoxFit.cover,

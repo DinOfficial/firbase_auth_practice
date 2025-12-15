@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:getx/home_page.dart';
-import 'package:getx/sign_up_screen.dart';
+import 'package:getx/log_in_screen.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart' show Firebase;
 
@@ -26,7 +26,7 @@ class App extends StatelessWidget {
           if (snapshot.hasData) {
             return const HomePage();
           }
-          return const SignUpScreen();
+          return const SignInScreen();
         },
       ),
     );

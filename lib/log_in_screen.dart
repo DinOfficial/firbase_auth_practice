@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:getx/sign_up_screen.dart';
-
+import 'package:google_sign_in/google_sign_in.dart';
 import 'home_page.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -20,14 +20,24 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Firebase login')),
       body: Form(
         key: _formKey,
         child: ListView(
           padding: EdgeInsets.all(12),
           children: [
-            Text('Login form'),
-            const SizedBox(height: 12),
+            const SizedBox(height: 100),
+            Text(
+              'Login to your account',
+              style: TextStyle(fontSize: 20),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Use your email password or gmail',
+              style: TextStyle(fontSize: 12),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
             TextFormField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
@@ -71,11 +81,29 @@ class _SignInScreenState extends State<SignInScreen> {
               child: ElevatedButton(onPressed: _onTap, child: Text('Login')),
             ),
             const SizedBox(height: 12),
+            if (_isLoading)
+              const Center(child: CircularProgressIndicator())
+            else
+              Column(
+                children: [
+                  const SizedBox(height: 12),
+                  TextButton(
+                    onPressed: () async {
+                      await _onTapGoogleSignIn();
+                    },
+                    child: const Text('Login with Google'),
+                  ),
+                ],
+              ),
+            const SizedBox(height: 20),
             TextButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                );
               },
-              child: Text('Crate user'),
+              child: const Text('Don\'t have an account? Sign Up'),
             ),
           ],
         ),
@@ -103,11 +131,9 @@ class _SignInScreenState extends State<SignInScreen> {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (_) => HomePage()),
-              (p) => false,
+          (p) => false,
         );
       }
-
-
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
     }
@@ -118,5 +144,53 @@ class _SignInScreenState extends State<SignInScreen> {
   void clearData() {
     _emailController.clear();
     _passwordController.clear();
+  }
+
+  Future<void> _onTapGoogleSignIn() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      if (googleUser == null) {
+        if (mounted) setState(() => _isLoading = false);
+        return;
+      }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
+
+      if (userCredential.user != null && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Google Sign-In Successful: ${userCredential.user?.displayName}')),
+        );
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+          (p) => false,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('An error occurred: $e')));
+      }
+    }
+
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 }
