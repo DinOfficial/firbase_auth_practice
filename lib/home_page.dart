@@ -16,7 +16,8 @@ class _HomePageState extends State<HomePage> {
     final User? currentUser = FirebaseAuth.instance.currentUser;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black54,
+        backgroundColor: Colors.amber,
+        title: Text('Live Score App'),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 24),
@@ -37,32 +38,13 @@ class _HomePageState extends State<HomePage> {
       ),
       body: currentUser == null
           ? const Center(child: CircularProgressIndicator())
-          : Center(
-              child: Column(
-                mainAxisAlignment: .center,
-                crossAxisAlignment: .center,
-                children: [
-                  if (currentUser.photoURL != null)
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: Image.network(
-                        currentUser.photoURL!,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
-                    )
-                  else
-                    const CircleAvatar(radius: 50, child: Icon(Icons.person, size: 50)),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Name : ${FirebaseAuth.instance.currentUser?.displayName ?? 'N/A'} \n'
-                    'Email: ${FirebaseAuth.instance.currentUser?.email ?? 'N/A'} \n'
-                    'Last Sign In: ${FirebaseAuth.instance.currentUser?.metadata.lastSignInTime ?? 'N/A'} ',
-                  ),
-                ],
-              ),
-            ),
+          : Column(
+            mainAxisAlignment: .center,
+            crossAxisAlignment: .center,
+            children: [
+
+            ],
+          ),
     );
   }
 }
