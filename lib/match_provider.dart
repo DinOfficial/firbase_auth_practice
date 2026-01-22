@@ -15,7 +15,8 @@ class MatchProvider extends ChangeNotifier {
   List<MatchModel> get list => _list;
 
   Future<void> getMatches() async {
-
+    _list.clear();
+    notifyListeners();
     QuerySnapshot<Map<String, dynamic>> snapshot = await firebaseFirestore
         .collection('football')
         .get();
@@ -24,4 +25,5 @@ class MatchProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
 }
