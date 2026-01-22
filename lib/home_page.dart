@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:getx/log_in_screen.dart';
 import 'package:getx/match_model.dart';
 import 'package:getx/match_provider.dart';
-import 'package:getx/sign_up_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:provider/provider.dart';
 
-import 'add_match_screen.dart';
+import 'add_update_match_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -66,22 +64,46 @@ class _HomePageState extends State<HomePage> {
           if (asyncSnapshot.hasData) {
             list.clear();
             for (QueryDocumentSnapshot<Map<String, dynamic>> doc in asyncSnapshot.data!.docs) {
-              list.add(MatchModel.fromJson(doc.data()));
+              list.add(MatchModel.fromJson(doc.data(), doc.id));
             }
             return ListView.separated(
               itemCount: list.length,
               itemBuilder: (context, index) {
                 final footballMatch = list[index];
                 return ListTile(
-                  leading: CircleAvatar(radius: 8, backgroundColor: footballMatch.isRunning ? Colors.green: Colors.grey,),
+                  leading: CircleAvatar(
+                    radius: 8,
+                    backgroundColor: footballMatch.isRunning ? Colors.green : Colors.grey,
+                  ),
                   title: Text('${footballMatch.team1Name} VS ${footballMatch.team2Name}'),
                   subtitle: Text('Winner Team: ${footballMatch.winnerTeam}'),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('${footballMatch.team1Score} : ${footballMatch.team2Score}', style: TextStyle(fontSize: 24)),
-                      IconButton(onPressed: () {}, icon: Icon(Icons.edit_location_alt_outlined)),
-                      IconButton(onPressed: () {}, icon: Icon(Icons.delete_rounded)),
+                      Text(
+                        '${footballMatch.team1Score} : ${footballMatch.team2Score}',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AddUpdateMatchScreen(match: footballMatch),
+                            ),
+                          );
+                        },
+                        icon: Icon(Icons.edit_location_alt_outlined),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          firestore
+                              .collection('football')
+                              .doc(asyncSnapshot.data!.docs[index].id)
+                              .delete();
+                        },
+                        icon: Icon(Icons.delete_rounded, color: Colors.red),
+                      ),
                     ],
                   ),
                 );
@@ -99,6 +121,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onTapAddIcon() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const AddMatchScreen()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => AddUpdateMatchScreen(match: null)));
   }
 }

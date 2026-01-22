@@ -5,7 +5,6 @@ import 'package:getx/match_model.dart';
 
 class MatchProvider extends ChangeNotifier {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-  final List<MatchModel> _list = [];
 
   // Future<QuerySnapshot<Map<String, dynamic>>> getMatch() async {
   //   final result = await firebaseFirestore.collection('football').get();
@@ -32,6 +31,17 @@ class MatchProvider extends ChangeNotifier {
     } catch (e) {
       if (kDebugMode) {
         print(e);
+      }
+    }
+  }
+
+  Future<void> updateMatch(MatchModel match) async {
+    try {
+      final docRef = firebaseFirestore.collection('football').doc(match.id);
+      await docRef.update(match.toJson());
+    } catch (e) {
+      if (kDebugMode) {
+        print('errrrroooor: $e');
       }
     }
   }
