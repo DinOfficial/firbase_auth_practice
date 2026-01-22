@@ -12,18 +12,27 @@ class MatchProvider extends ChangeNotifier {
   //   return result;
   // }
 
-  List<MatchModel> get list => _list;
+  // List<MatchModel> get list => _list;
+  //
+  // Future<void> getMatches() async {
+  //   _list.clear();
+  //   notifyListeners();
+  //   QuerySnapshot<Map<String, dynamic>> snapshot = await firebaseFirestore
+  //       .collection('football')
+  //       .get();
+  //   for (QueryDocumentSnapshot<Map<String, dynamic>> doc in snapshot.docs) {
+  //     _list.add(MatchModel.fromJson(doc.data()));
+  //   }
+  //   notifyListeners();
+  // }
 
-  Future<void> getMatches() async {
-    _list.clear();
-    notifyListeners();
-    QuerySnapshot<Map<String, dynamic>> snapshot = await firebaseFirestore
-        .collection('football')
-        .get();
-    for (QueryDocumentSnapshot<Map<String, dynamic>> doc in snapshot.docs) {
-      _list.add(MatchModel.fromJson(doc.data()));
+  Future<void> addMatch(MatchModel match) async {
+    try {
+      await firebaseFirestore.collection('football').add(match.toJson());
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
     }
-    notifyListeners();
   }
-
 }
