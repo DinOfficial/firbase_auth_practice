@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:getx/home_page.dart';
@@ -24,6 +25,7 @@ class _AddUpdateMatchScreenState extends State<AddUpdateMatchScreen> {
 
   @override
   void initState() {
+    FirebaseCrashlytics.instance.log('enter in create update page enter');
     super.initState();
     if (widget.match != null) {
       _team1NameController.text = widget.match!.team1Name;
