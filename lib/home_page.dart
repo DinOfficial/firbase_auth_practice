@@ -30,19 +30,26 @@ class _HomePageState extends State<HomePage> {
 
   BannerAd? _bannerAd;
 
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    if (_bannerAd == null) {
+      _loadAd();
+    }
+  }
+
   void _loadAd() async {
-    // Get an AnchoredAdaptiveBannerAdSize before loading the ad.
     final size = await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
       MediaQuery.sizeOf(context).width.truncate(),
     );
 
     if (size == null) {
-      // Unable to get width of anchored banner.
       return;
     }
 
     BannerAd(
-      adUnitId: "_adUnitId",
+      adUnitId: "ca-app-pub-3940256099942544/9214589741",
       request: const AdRequest(),
       size: size,
       listener: BannerAdListener(
